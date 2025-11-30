@@ -97,10 +97,6 @@ for i, (name, prompt) in enumerate(prompts.items(), start=1):
 ```
 
 ---
-
-## Author 
-Vibha Pandey
-
 Created by **Vibha Pandey**
 
 ---
