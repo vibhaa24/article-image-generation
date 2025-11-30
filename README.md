@@ -1,107 +1,106 @@
-# article-image-generation
-Image generation from articles using Stable Diffusion
+# Article Image Generation with Stable Diffusion
 
-This project takes three articles and generates realistic images based on their content using Stable Diffusion.
-Each article has 2 images, so a total of 6 images are created.
+Generate realistic images from article content using Stable Diffusion.
 
-How It Works
+## Overview
 
-We read the articles.
+This project reads multiple articles and generates high-quality, realistic images that visually summarize each article. For each article, two unique images are created using Stable Diffusion (public model), totaling six images for three articles. Images are automatically saved in the `/content` folder on Google Colab.
 
-We create simple and clear prompts that describe each article.
+## Workflow
 
-We use Stable Diffusion (public model) to generate realistic photos.
+1. **Article Analysis:** Read and understand each article.
+2. **Prompt Creation:** Write simple, clear prompts describing the core ideas of each article.
+3. **Image Generation:** Use Stable Diffusion to create realistic, cinematic images.
+4. **Output:** Save all generated images in `/content` for easy access.
 
-All images get saved in the /content folder in Google Colab.
+## Generated Images
 
-Images Generated
-Article 1
+**Article 1**
+- `Article1_img1.png`: Solar-powered African village at sunset
+- `Article1_img2.png`: Wind turbines near a coastal village
 
-Article1_img1.png – Solar-powered African village at sunset
+**Article 2**
+- `Article2_img1.png`: Youth street protest
+- `Article2_img2.png`: Candlelight vigil
 
-Article1_img2.png – Wind turbines near a coastal village
+**Article 3**
+- `Article3_img1.png`: Creative studio with digital screens
+- `Article3_img2.png`: Workstation close-up with monitors
 
-Article 2
+## Technologies Used
 
-Article2_img1.png – Youth street protest
+- **Python**
+- **Google Colab**
+- **Diffusers (Stable Diffusion)**
+- **PyTorch**
+- **Pillow**
 
-Article2_img2.png – Candlelight vigil
+## How to Run
 
-Article 3
+1. **Open** the project in Google Colab.
+2. **Install** required libraries (`diffusers`, `torch`, `pillow`).
+3. **Copy / Run** the final code block below.
 
-Article3_img1.png – Creative studio with digital screens
+All images will be saved automatically in `/content`.
 
-Article3_img2.png – Workstation close-up with monitors
+---
 
-Technologies Used
+## Example Code
 
-Python
-
-Google Colab
-
-Diffusers (Stable Diffusion)
-
-PyTorch
-
-Pillow
-
-Steps to Run
-
-Open Google Colab
-
-Install required libraries
-
-Copy and run the final code
-
-Images will be saved in /content
-
-Final Code Used
+```python
 import os, torch
 from diffusers import StableDiffusionPipeline
 
+# Output directory
 OUT = "/content"
 os.makedirs(OUT, exist_ok=True)
 
+# Model and device setup
 MODEL = "runwayml/stable-diffusion-v1-5"
 device = "cuda" if torch.cuda.is_available() else "cpu"
-dtype = torch.float16 if device=="cuda" else torch.float32
+dtype = torch.float16 if device == "cuda" else torch.float32
 
+# Initialize pipeline
 pipe = StableDiffusionPipeline.from_pretrained(
     MODEL,
     torch_dtype=dtype,
-    safety_checker=None
+    safety_checker=None,
 ).to(device)
-
 pipe.enable_attention_slicing()
 
+# Prompts for each image
 prompts = {
-  "Article1_img1.png": "Realistic cinematic sunset photo of an African village with solar panels, families, children, sharp details, no text",
-  "Article1_img2.png": "Wide-angle realistic coastal village with wind turbines, villagers repairing tools, clean lighting, no text",
-
-  "Article2_img1.png": "Realistic youth protest with young people holding signs, natural expressions, no text",
-  "Article2_img2.png": "Candlelight vigil with warm glow on faces, realistic details, no text",
-
-  "Article3_img1.png": "Creative studio with holographic digital screens, designers working, cinematic look, no text",
-  "Article3_img2.png": "Close-up workstation with monitors and hand pointing, bright clean details, no text"
+    "Article1_img1.png": "Realistic cinematic sunset photo of an African village with solar panels, families, children, sharp details, no text",
+    "Article1_img2.png": "Wide-angle realistic coastal village with wind turbines, villagers repairing tools, clean lighting, no text",
+    "Article2_img1.png": "Realistic youth protest with young people holding signs, natural expressions, no text",
+    "Article2_img2.png": "Candlelight vigil with warm glow on faces, realistic details, no text",
+    "Article3_img1.png": "Creative studio with holographic digital screens, designers working, cinematic look, no text",
+    "Article3_img2.png": "Close-up workstation with monitors and hand pointing, bright clean details, no text"
 }
-
+# Negative prompt example
 NEG = "ugly, blurry, low quality, distorted face, text, watermark, extra limbs"
 
+# Image generation loop
 for i, (name, prompt) in enumerate(prompts.items(), start=1):
     seed = 1234 + i
     gen = torch.Generator(device=device).manual_seed(seed)
-    img = pipe(prompt,
-               height=720,
-               width=512,
-               num_inference_steps=35,
-               guidance_scale=8,
-               negative_prompt=NEG,
-               generator=gen).images[0]
+    img = pipe(
+        prompt,
+        height=720,
+        width=512,
+        num_inference_steps=35,
+        guidance_scale=8,
+        negative_prompt=NEG,
+        generator=gen,
+    ).images[0]
     img.save(os.path.join(OUT, name))
+```
 
-Created By
-Vibha Pandey...
+---
 
-Created By
-
+## Author 
 Vibha Pandey
+
+Created by **Vibha Pandey**
+
+---
